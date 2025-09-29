@@ -1,0 +1,14 @@
+{
+"compilerOptions": {
+    "outDir": "./dist",       // compiled JS goes here
+    "rootDir": "./",          // where your TS files live
+    "allowJs": false,         // don't treat .js files as source
+    "noEmitOnError": false,    // still output JS even if errors
+    "strict": true,
+    "target": "ES2020",
+},
+"exclude": [
+    "node_modules",
+    "**/*.js"                 // ignore all plain .js files
+    ]
+}
