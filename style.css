@@ -17,21 +17,28 @@ body{
     gap: 20px;
 }
 
-#start-game {
+#start-game,#reset-game {
     padding: 10px;
 }
 
-.gameContainer {
+.container {
+    display: flex;
+}
+
+.gridContainer {
     display: grid;
     grid-template-columns: repeat(3,1fr);
     grid-template-rows: repeat(3,1fr);
 }
 
 .gridCell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: white;
     min-height: 250px;
     min-width: 300px;
-    font-size: 36px;
+    font-size: 120px;
     border: 1px black solid;
     padding: 5px;
 }

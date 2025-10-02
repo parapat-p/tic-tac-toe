@@ -5,9 +5,12 @@ type PlayerInstance = {
 }
 
 type GridArrayInstance = {
+    getGridCell:(positionX:number,positionY:number) => HTMLDivElement;
     addPlayerMark: (playerMark:string,positionX:number,positionY:number) => void;
     getGridValue: (positionX:number,positionY:number) => string;
+    resetBoard: () => void;
 }
+
 
 type GameInstance = {
 
@@ -41,10 +44,13 @@ const GridArrayManager = ():GridArrayInstance => {
     
     const gridArrayElement:HTMLDivElement[][] = [];
     const gameContainer = document.querySelector(".gameContainer");
+    const gridContainer = document.createElement("div");
+    gridContainer.className = "gridContainer";
 
-    const createGridCelll = ():HTMLDivElement => {
+    const createGridCelll = (positionX:number,positionY:number):HTMLDivElement => {
         let gridCellElement:HTMLDivElement = document.createElement('div');
         gridCellElement.className = "gridCell";
+
         return gridCellElement;
     }   
 
@@ -52,7 +58,7 @@ const GridArrayManager = ():GridArrayInstance => {
         if(!gameContainer){
             throw new Error("gameContainer class not found!");
         }
-        gameContainer.appendChild(cell);
+        gridContainer.appendChild(cell)
     }
 
     const createGridArray = ():string[][] => {
@@ -61,13 +67,18 @@ const GridArrayManager = ():GridArrayInstance => {
         let gridRowElement:HTMLDivElement[] = [];
         let gridRow:string[] = [];
         for(let j = 0; j<3 ; j++){
-            let gridCellElement = createGridCelll();
+            let gridCellElement = createGridCelll(i,j);
             gridRowElement.push(gridCellElement);
             gridRow.push('');
             addCellToGridArray(gridCellElement);
         }
+        gridArray.push(gridRow);
         gridArrayElement.push(gridRowElement);
     }
+    if(gameContainer){
+        gameContainer.appendChild(gridContainer);
+    }
+    
 
     return gridArray;
     }
@@ -83,9 +94,19 @@ const GridArrayManager = ():GridArrayInstance => {
         return gridArray[positionX][positionY];
     }
 
+    const getGridCell = (positionX:number,positionY:number) => {
+        return gridArrayElement[positionX][positionY];
+    }
+
+    const resetBoard = () => {
+        createGridArray();
+    }
+
     return {
+        getGridCell,
+        addPlayerMark,
         getGridValue,
-        addPlayerMark
+        resetBoard
     }
 }
 
@@ -95,13 +116,10 @@ const GridArrayManager = ():GridArrayInstance => {
 
 const tictactoeGame = (player1:PlayerInstance,player2:PlayerInstance):GameInstance => {
     
-    const p1 = player1;
-    const p2 = player2;
-
-    const p1Mark = 'x';
-    const p2Mark = 'o';
-    let gameRound = 0;
-    const gameGrid = GridArrayManager();
+    let currentMark:string = "x";
+    let gameRound:number = 0;
+    let winner = "";
+    const gameGrid:GridArrayInstance = GridArrayManager();
 
     const checkWinning = () => {
         // check column
@@ -129,6 +147,42 @@ const tictactoeGame = (player1:PlayerInstance,player2:PlayerInstance):GameInstan
         return "";
 
     }
+
+    const checkValidGridPlacement = (positionX:number,positionY:number):boolean => {
+        if(gameGrid.getGridValue(positionX,positionY)!== ""){
+            return false;
+        }
+        return true
+    }
+
+    const shuffleMark = () => {
+        if(currentMark==="x"){
+            currentMark = "o";
+        }
+        else{
+            currentMark = "x";
+        }
+    }
+
+    const addButtonEventLogic = () => {
+        for(let i = 0;i<3;i++){
+            for(let j = 0;j<3;j++){
+                gameGrid.getGridCell(i,j).addEventListener("click", () => {
+                    if(checkValidGridPlacement(i,j)){
+                        gameGrid.addPlayerMark(currentMark,i,j);
+                        gameRound++;
+                        winner = checkWinning();
+                        shuffleMark()
+                        if( ( winner!=="" ) || ( gameRound === 9 ) ){
+                        console.log("GameEnd");
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+    addButtonEventLogic();
 
     const checkValidWin = (first:string,second:string,third:string):boolean => {
         
