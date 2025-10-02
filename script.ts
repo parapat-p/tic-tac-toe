@@ -36,16 +36,39 @@ const Player = (name:string): PlayerInstance => {
     }
 }
 
+
 const GridArrayManager = ():GridArrayInstance => {
     
+    const gridArrayElement:HTMLDivElement[][] = [];
+    const gameContainer = document.querySelector(".gameContainer");
+
+    const createGridCelll = ():HTMLDivElement => {
+        let gridCellElement:HTMLDivElement = document.createElement('div');
+        gridCellElement.className = "gridCell";
+        return gridCellElement;
+    }   
+
+    const addCellToGridArray = (cell:HTMLDivElement) => {
+        if(!gameContainer){
+            throw new Error("gameContainer class not found!");
+        }
+        gameContainer.appendChild(cell);
+    }
+
     const createGridArray = ():string[][] => {
     let gridArray:string[][] = [];
     for(let i = 0;i<3;i++){
+        let gridRowElement:HTMLDivElement[] = [];
         let gridRow:string[] = [];
         for(let j = 0; j<3 ; j++){
+            let gridCellElement = createGridCelll();
+            gridRowElement.push(gridCellElement);
             gridRow.push('');
+            addCellToGridArray(gridCellElement);
         }
+        gridArrayElement.push(gridRowElement);
     }
+
     return gridArray;
     }
 
@@ -53,6 +76,7 @@ const GridArrayManager = ():GridArrayInstance => {
 
     const addPlayerMark = (playerMark:string,positionX:number,positionY:number) => {
         gridArray[positionX][positionY] = playerMark;
+        gridArrayElement[positionX][positionY].textContent = playerMark;
     }
 
     const getGridValue = (positionX:number,positionY:number) => {
@@ -64,6 +88,9 @@ const GridArrayManager = ():GridArrayInstance => {
         addPlayerMark
     }
 }
+
+
+
 
 
 const tictactoeGame = (player1:PlayerInstance,player2:PlayerInstance):GameInstance => {
@@ -99,12 +126,9 @@ const tictactoeGame = (player1:PlayerInstance,player2:PlayerInstance):GameInstan
             return gameGrid.getGridValue(1,1)
         }
 
-
         return "";
 
-
     }
-
 
     const checkValidWin = (first:string,second:string,third:string):boolean => {
         
@@ -123,3 +147,6 @@ const tictactoeGame = (player1:PlayerInstance,player2:PlayerInstance):GameInstan
 
     }
 }
+
+
+tictactoeGame(Player("Best"),Player("Jimmy"));
