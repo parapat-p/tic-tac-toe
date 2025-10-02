@@ -42,8 +42,12 @@ const Player = (name:string): PlayerInstance => {
 
 const GridArrayManager = ():GridArrayInstance => {
     
-    const gridArrayElement:HTMLDivElement[][] = [];
     const gameContainer = document.querySelector(".gameContainer");
+    if(!gameContainer){
+        throw new Error("No game found");
+    }
+
+    let gridArrayElement:HTMLDivElement[][] = [];
     const gridContainer = document.createElement("div");
     gridContainer.className = "gridContainer";
 
@@ -70,6 +74,7 @@ const GridArrayManager = ():GridArrayInstance => {
             let gridCellElement = createGridCelll(i,j);
             gridRowElement.push(gridCellElement);
             gridRow.push('');
+    
             addCellToGridArray(gridCellElement);
         }
         gridArray.push(gridRow);
@@ -88,6 +93,7 @@ const GridArrayManager = ():GridArrayInstance => {
     const addPlayerMark = (playerMark:string,positionX:number,positionY:number) => {
         gridArray[positionX][positionY] = playerMark;
         gridArrayElement[positionX][positionY].textContent = playerMark;
+        console.log(gridArray);
     }
 
     const getGridValue = (positionX:number,positionY:number) => {
@@ -98,9 +104,17 @@ const GridArrayManager = ():GridArrayInstance => {
         return gridArrayElement[positionX][positionY];
     }
 
+
     const resetBoard = () => {
-        createGridArray();
+        gameContainer.removeChild(gridContainer);
+        while(gridContainer.firstChild){
+            gridContainer.removeChild(gridContainer.firstChild);
+        }
+        gridArrayElement = [];
+        gridArray = createGridArray();
     }
+
+
 
     return {
         getGridCell,
@@ -115,10 +129,18 @@ const GridArrayManager = ():GridArrayInstance => {
 
 
 const tictactoeGame = (player1:PlayerInstance,player2:PlayerInstance):GameInstance => {
-    
     let currentMark:string = "x";
     let gameRound:number = 0;
     let winner = "";
+
+    const initGame = () => {
+        currentMark = "x";
+        gameRound = 0;
+        winner = "";
+        addButtonEventLogic();
+    }
+
+
     const gameGrid:GridArrayInstance = GridArrayManager();
 
     const checkWinning = () => {
@@ -139,6 +161,9 @@ const tictactoeGame = (player1:PlayerInstance,player2:PlayerInstance):GameInstan
         }
 
         gameOver = checkValidWin(gameGrid.getGridValue(0,0) ,gameGrid.getGridValue(1,1) ,(gameGrid.getGridValue(2,2)) )
+        if(gameOver){
+            return gameGrid.getGridValue(1,1)
+        }
         gameOver = checkValidWin(gameGrid.getGridValue(0,2) ,gameGrid.getGridValue(1,1) ,(gameGrid.getGridValue(2,0)) )
         if(gameOver){
             return gameGrid.getGridValue(1,1)
@@ -168,7 +193,7 @@ const tictactoeGame = (player1:PlayerInstance,player2:PlayerInstance):GameInstan
         for(let i = 0;i<3;i++){
             for(let j = 0;j<3;j++){
                 gameGrid.getGridCell(i,j).addEventListener("click", () => {
-                    if(checkValidGridPlacement(i,j)){
+                    if(checkValidGridPlacement(i,j) || !(winner!=="")){
                         gameGrid.addPlayerMark(currentMark,i,j);
                         gameRound++;
                         winner = checkWinning();
@@ -196,6 +221,21 @@ const tictactoeGame = (player1:PlayerInstance,player2:PlayerInstance):GameInstan
 
         return true;
     }
+
+    const addResetbuttonEventLogic= () => {
+        const resetButton = document.getElementById("reset-game");
+        if(!resetButton){
+            throw new Error("No reset button found")
+        }
+        resetButton.addEventListener("click",()=>{
+                gameGrid.resetBoard();
+                console.log("reset");
+                initGame();
+            });
+        
+    }
+
+    addResetbuttonEventLogic();
 
     return {
 
