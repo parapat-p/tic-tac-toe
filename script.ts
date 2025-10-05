@@ -128,7 +128,7 @@ const GridArrayManager = ():GridArrayInstance => {
 
 
 
-const tictactoeGame = (player1:PlayerInstance,player2:PlayerInstance):GameInstance => {
+const tictactoeGame = ():GameInstance => {
     let currentMark:string = "x";
     let gameRound:number = 0;
     let winner = "";
@@ -187,13 +187,14 @@ const tictactoeGame = (player1:PlayerInstance,player2:PlayerInstance):GameInstan
         else{
             currentMark = "x";
         }
-    }
+    } 
 
     const addButtonEventLogic = () => {
         for(let i = 0;i<3;i++){
             for(let j = 0;j<3;j++){
                 gameGrid.getGridCell(i,j).addEventListener("click", () => {
-                    if(checkValidGridPlacement(i,j) || !(winner!=="")){
+                    if(winner!==""){ return; } // Do nothing if game already end.
+                    if( checkValidGridPlacement(i,j)){
                         gameGrid.addPlayerMark(currentMark,i,j);
                         gameRound++;
                         winner = checkWinning();
@@ -243,4 +244,4 @@ const tictactoeGame = (player1:PlayerInstance,player2:PlayerInstance):GameInstan
 }
 
 
-tictactoeGame(Player("Best"),Player("Jimmy"));
+tictactoeGame();

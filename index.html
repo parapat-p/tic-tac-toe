@@ -11,14 +11,17 @@
     <h2>Tic-Tac-Toe Game!</h2>
     <div class="button-section">
         <button id="reset-game">Reset Game</button>
-        <button id="start-game">Start Game!</button>
+        <button id="start-game">Set Player Name</button>
     </div>
-    
-
+    <div class="round" >Round : <span id="gameRound">0</span></div>
     <div class="container">
-        <div class="player"></div>
-        <div class="player"></div>
+        <div class="player">
+            <p id="player1"><span id="player1Name">Player1 : </span><span id="player1Score">0</span></p>
+        </div>
         <div class="gameContainer"></div>
+        <div class="player">
+            <p id="player2"><span id="player2Name">Player2 : </span><span id="player2Score">0</span></p>
+        </div>
     </div>
     <script src="dist/script.js"></script>
 </body>

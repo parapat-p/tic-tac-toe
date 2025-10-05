@@ -23,6 +23,7 @@ body{
 
 .container {
     display: flex;
+    gap: 100px;
 }
 
 .gridContainer {
@@ -46,4 +47,16 @@ body{
 .gridCell:hover{
     border: 2px blue solid;
     background-color: rgb(229, 227, 227);
+}
+
+.round{
+    font-size: 40px;
+}
+
+.player{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
 }
