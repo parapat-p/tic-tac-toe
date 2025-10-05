@@ -1,1 +1,2 @@
 # tic-tac-toe
+This project is a part of The Odin project learning course about how module of javascript by using little global code or global variable as possible and wrap in object by create a tic tac toe game with interface on webpage
