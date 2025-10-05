@@ -2,6 +2,7 @@ type PlayerInstance = {
     updateScore:(result:number) => void,
     getScore:() => number,
     getPlayerName:() => string,
+    setPlayerName:(name:string) => void,
 }
 
 type GridArrayInstance = {
@@ -16,9 +17,10 @@ type GameInstance = {
 
 }
 
-const Player = (name:string): PlayerInstance => {
+
+const Player = (): PlayerInstance => {
     let score:number = 0;
-    const playerName:string = name;
+    let playerName:string = "Player";
 
     const updateScore = (result:number) => {
         score += result;
@@ -32,10 +34,15 @@ const Player = (name:string): PlayerInstance => {
         return playerName;
     }
 
+    const setPlayerName = (name:string) => {
+        playerName = name;
+    }
+
     return {
         updateScore,
         getScore,
-        getPlayerName
+        getPlayerName,
+        setPlayerName
     }
 }
 
@@ -133,6 +140,21 @@ const tictactoeGame = ():GameInstance => {
     let gameRound:number = 0;
     let winner = "";
 
+    const player1 = Player();
+    const player2 = Player();
+
+    const updatePlayerScore = ()=> {
+        if(winner==="x"){
+            player1.updateScore(1);
+        }
+        else if(winner==="o"){
+            player2.updateScore(1);
+        }
+        else{
+            return;
+        }
+    }
+
     const initGame = () => {
         currentMark = "x";
         gameRound = 0;
@@ -200,6 +222,7 @@ const tictactoeGame = ():GameInstance => {
                         winner = checkWinning();
                         shuffleMark()
                         if( ( winner!=="" ) || ( gameRound === 9 ) ){
+                        updatePlayerScore();
                         console.log("GameEnd");
                         }
                     }
@@ -237,6 +260,45 @@ const tictactoeGame = ():GameInstance => {
     }
 
     addResetbuttonEventLogic();
+
+    const addSetPlayerNameButtonLogic = ()=>{
+        const setNameButton = document.getElementById("setPlayerName");
+        const form = document.querySelector("form");
+        const dialog = document.getElementById("setnameDialog") as HTMLDialogElement;
+        const player1Inputname = document.getElementById("inputNamePlayer1") as HTMLInputElement;
+        const player2Inputname = document.getElementById("inputNamePlayer2") as HTMLInputElement;
+        const player1NameUI = document.getElementById("player1Name") as HTMLSpanElement;
+        const player2NameUI = document.getElementById("player2Name") as HTMLSpanElement;
+        if( ( !setNameButton ) || ( !form || (!dialog) ) ){
+            throw new Error("No set name or form button found")
+        }
+        setNameButton.addEventListener("click",(e) => {
+            dialog.showModal();
+        }
+    )
+
+        form.addEventListener("submit",(e) => {
+            e.preventDefault();
+            const submitter = e.submitter;
+            if(submitter){
+                if(submitter.id === "novalidate-close"){
+                    dialog.close();
+                }
+                if(player1Inputname && player2Inputname){
+                    player1.setPlayerName(player1Inputname.value);
+                    player2.setPlayerName(player2Inputname.value);
+                    player1NameUI.textContent = `${player1.getPlayerName()} : `
+                    player2NameUI.textContent = `${player2.getPlayerName()} : `
+                }
+                dialog.close();
+            }
+            form.reset();
+        })
+
+        return;
+    }
+
+    addSetPlayerNameButtonLogic();
 
     return {
 

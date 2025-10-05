@@ -11,7 +11,21 @@
     <h2>Tic-Tac-Toe Game!</h2>
     <div class="button-section">
         <button id="reset-game">Reset Game</button>
-        <button id="start-game">Set Player Name</button>
+        <button id="setPlayerName">Set Player Name</button>
+        <dialog id="setnameDialog">
+            <form>
+                <p>
+                    Player1 Name:
+                    <input type="text" placeholder="Player1" id="inputNamePlayer1"/>
+                </p>
+                <p>
+                    Player2 Name:
+                    <input type="text" placeholder="Player2"  id="inputNamePlayer2" />
+                </p>
+                <input type="submit" id="close-dialog" value="Submit"/>
+                <input type="submit" id="novalidate-close" value="Cancle" formnovalidate />
+            </form>
+        </dialog>
     </div>
     <div class="round" >Round : <span id="gameRound">0</span></div>
     <div class="container">
