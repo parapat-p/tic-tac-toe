@@ -100,7 +100,6 @@ const GridArrayManager = ():GridArrayInstance => {
     const addPlayerMark = (playerMark:string,positionX:number,positionY:number) => {
         gridArray[positionX][positionY] = playerMark;
         gridArrayElement[positionX][positionY].textContent = playerMark;
-        console.log(gridArray);
     }
 
     const getGridValue = (positionX:number,positionY:number) => {
@@ -142,18 +141,6 @@ const tictactoeGame = ():GameInstance => {
 
     const player1 = Player();
     const player2 = Player();
-
-    const updatePlayerScore = ()=> {
-        if(winner==="x"){
-            player1.updateScore(1);
-        }
-        else if(winner==="o"){
-            player2.updateScore(1);
-        }
-        else{
-            return;
-        }
-    }
 
     const initGame = () => {
         currentMark = "x";
@@ -222,8 +209,8 @@ const tictactoeGame = ():GameInstance => {
                         winner = checkWinning();
                         shuffleMark()
                         if( ( winner!=="" ) || ( gameRound === 9 ) ){
-                        updatePlayerScore();
-                        console.log("GameEnd");
+                        addScoreWinner();
+                        setScore();
                         }
                     }
                 })
@@ -253,10 +240,37 @@ const tictactoeGame = ():GameInstance => {
         }
         resetButton.addEventListener("click",()=>{
                 gameGrid.resetBoard();
-                console.log("reset");
+
                 initGame();
             });
         
+    }
+
+    const setScore = ()=>{
+        const score1 = document.getElementById("player1Score") as HTMLSpanElement;
+        const score2 = document.getElementById("player2Score") as HTMLSpanElement;
+        if(winner === ""){
+            return;
+        }
+        if(!score1 && !score2){
+            throw new Error("Score element not found!");
+        }             
+        score1.textContent = `${player1.getScore()}`;
+        score2.textContent = `${player2.getScore()}`;
+        return;
+    }
+
+    const addScoreWinner = ()=>{
+        if(winner===""){
+            return;
+        }
+
+        if(winner==="x"){
+            player1.updateScore(1);
+        }
+        else if(winner==="o") {
+            player2.updateScore(1);
+        }
     }
 
     addResetbuttonEventLogic();
